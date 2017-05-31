@@ -1,0 +1,12 @@
+<ion-list radio-group [(ngModel)]="statusFilter">
+
+  <ion-list-header>
+    Filter Games
+  </ion-list-header>
+
+  <ion-item *ngFor="let game of games; let index = index;">
+    <ion-label>{{game}}</ion-label>
+    <ion-checkbox checked="true" [(ngModel)]="gameStates[index]" (ionChange)="updateSelectedGame(index)"></ion-checkbox>
+  </ion-item>
+
+</ion-list>

@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Applications</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="funnel"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="presentSearchModal()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="type">
+      <ion-segment-button value="new" (click)="filterItems()">
+        New
+      </ion-segment-button>
+      <ion-segment-button value="pending" (click)="filterItems()">
+        Pending
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher *ngIf="!loading" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="aem-flex-center-center" *ngIf="loading">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ng-container *ngIf="!loading">
+    <div class="aem-flex-center-center" *ngIf="items.length == 0">
+      <span>No new applications to display.</span>
+    </div>
+
+    <!-- new applications -->
+    <ng-container *ngIf="type == 'new'">
+      <ion-list *ngIf="items.length != 0">
+        <button ion-item *ngFor="let item of items">
+          <div class="flex-space-between">
+            <h2>{{item.firstName}} {{item.lastName}}</h2>
+            <h3>{{item.date}}</h3>
+          </div>
+          <h3>{{item.email}}</h3>
+        </button>
+      </ion-list>
+    </ng-container>
+
+    <!-- pending applications -->
+    <ng-container *ngIf="type == 'pending'">
+      <ion-item-group>
+        <ion-item-divider (click)="toggleTimedOutVisible()">Timed out ({{items.length}})</ion-item-divider>
+        <ng-container *ngIf="timedOutVisible">
+          <button ion-item *ngFor="let item of items">
+            <div class="flex-space-between">
+              <h2>{{item.firstName}} {{item.lastName}}</h2>
+              <h3>{{item.date}}</h3>
+            </div>
+            <h3>{{item.email}}</h3>
+          </button>
+        </ng-container>
+      </ion-item-group>
+      <ion-item-group>
+        <ion-item-divider (click)="toggleNeedsFeedbackVisible()">Needs Feedback ({{items.length}})</ion-item-divider>
+        <ng-container *ngIf="needsFeedbackVisible">
+          <button ion-item *ngFor="let item of items">
+            <div class="flex-space-between">
+              <h2>{{item.firstName}} {{item.lastName}}</h2>
+              <h3>{{item.date}}</h3>
+            </div>
+            <h3>{{item.email}}</h3>
+          </button>
+        </ng-container>
+      </ion-item-group>
+    </ng-container>
+
+  </ng-container>
+</ion-content>
+
+<ion-footer class="aem-application-footer" *ngIf="!loading">
+  <ion-toolbar>
+    <ion-title>
+      Filters applied: {{items.length}}/{{items.length}} entries displayed.
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
